@@ -1,0 +1,460 @@
+//---------------------------------------------------------------------------
+
+#include <vcl.h>
+#include <math.h>
+#include <time.h>
+#include <dos.h>
+
+#pragma hdrstop
+
+#include "Unit1.h"
+#include "Unit2.h"
+#include "Unit3.h"
+
+
+//---------------------------------------------------------------------------
+#pragma package(smart_init)
+#pragma resource "*.dfm"
+TForm2 *Form2;
+int pool [4][9];
+int hand_player [6];
+int hand_comp [6];
+int pos_card, pos_comp, score_pl, score_comp, Left_hand_player, Left_hand_comp;
+void left_hand();
+void left_hand_comp();
+void restart();
+void result_main_menu();
+void pl_card();
+void comp_card();
+int score_card(int pos);
+
+struct profile
+{
+  char name [30];
+  char parol[30];
+  int win;
+  int lose;
+  int draw;
+};
+
+profile check;
+FILE *user_date;
+
+int number_acc;
+
+
+//---------------------------------------------------------------------------
+__fastcall TForm2::TForm2(TComponent* Owner)
+	: TForm(Owner)
+{
+
+}
+//---------------------------------------------------------------------------
+void __fastcall TForm2::MainMenuClick(TObject *Sender)
+{
+ Form1->Show();
+ Form2->Close();
+}
+//---------------------------------------------------------------------------
+void __fastcall TForm2::TakeCardClick(TObject *Sender)
+{
+ pl_card();
+ //ShowMessage("До выкида"+IntToStr(pool[hand_player[1]/10][hand_player[1]%10]));
+ //ShowMessage(hand_player[1]+11);
+ //ShowMessage("После выкида"+IntToStr(pool[hand_player[1]/10][hand_player[1]%10]));
+}
+//---------------------------------------------------------------------------
+void left_hand()
+{
+ if (Left_hand_player!=7)
+ {
+  Form2->Image1->Left-=50;
+  Form2->Image2->Left-=50;
+  Form2->Image3->Left-=50;
+  Form2->Image4->Left-=50;
+  Form2->Image5->Left-=50;
+  Form2->Image6->Left-=50;
+  Left_hand_player+=1;
+ }
+}
+void left_hand_comp()
+{
+ if (Left_hand_comp!=7)
+ {
+ Form2->Image7->Left-=50;
+ Form2->Image8->Left-=50;
+ Form2->Image9->Left-=50;
+ Form2->Image10->Left-=50;
+ Form2->Image11->Left-=50;
+ Form2->Image12->Left-=50;
+ Left_hand_comp+=1;
+ }
+
+}
+//---------------------------------------------------------------------------
+int score_card(int hand[],int pos)
+{
+ switch (hand[pos]%10)
+ {
+	 case 0:      //valet
+	 return 2;
+	 break;
+	 case 1:      //dama
+	 return 3;
+	 break;
+	 case 2:      //king
+	 return 4;
+	 break;
+	 case 3:      //6
+	 return 6;
+	 break;
+	 case 4:      //7
+	 return 7;
+	 break;
+	 case 5:      //8
+	 return 8;
+	 break;
+	 case 6:      //9
+	 return 9;
+	 break;
+	 case 7:      //10
+	 return 10;
+	 break;
+	 case 8:      //tyz
+	 return 11;
+	 break;
+	 default:
+	 break;
+ }
+}
+//---------------------------------------------------------------------------
+void restart()
+{
+ Form2->Image1->Left+=(50 * Left_hand_player);
+ Form2->Image2->Left+=(50 * Left_hand_player);
+ Form2->Image3->Left+=(50 * Left_hand_player);
+ Form2->Image4->Left+=(50 * Left_hand_player);
+ Form2->Image5->Left+=(50 * Left_hand_player);
+ Form2->Image6->Left+=(50 * Left_hand_player);
+ Form2->Image7->Left+=(50 * Left_hand_comp);
+ Form2->Image8->Left+=(50 * Left_hand_comp);
+ Form2->Image9->Left+=(50 * Left_hand_comp);
+ Form2->Image10->Left+=(50 * Left_hand_comp);
+ Form2->Image11->Left+=(50 * Left_hand_comp);
+ Form2->Image12->Left+=(50 * Left_hand_comp);
+
+ Form2->Image1->Picture=NULL;
+ Form2->Image2->Picture=NULL;
+ Form2->Image3->Picture=NULL;
+ Form2->Image4->Picture=NULL;
+ Form2->Image5->Picture=NULL;
+ Form2->Image6->Picture=NULL;
+ Form2->Image7->Picture=NULL;
+ Form2->Image8->Picture=NULL;
+ Form2->Image9->Picture=NULL;
+ Form2->Image10->Picture=NULL;
+ Form2->Image11->Picture=NULL;
+ Form2->Image12->Picture=NULL;
+
+ Form2->Score_player->Caption="";
+ Form2->Score_comp->Caption="";
+ Left_hand_player=0;
+ Left_hand_comp=0;
+
+ for (int i=0; i<4;i++)
+ {
+	for (int j=0; j<9; j++)
+	{
+	 pool[i][j]=1;
+	}
+ }
+ for (int i=0; i<6;i++)
+ {
+  hand_player[i]=0;
+ }
+ pos_card=0;
+ pos_comp=0;
+ score_pl=0;
+ score_comp=0;
+ Form2->TakeCard->Enabled=true;
+ Form2->NextTurn->Enabled=true;
+}
+//---------------------------------------------------------------------------
+void result_main_menu()
+{
+ Form1->Show();
+ Form2->Hide();
+ Form3->Hide();
+}
+//---------------------------------------------------------------------------
+void pl_card()
+{
+ srand(time(NULL));
+ bool table(false);
+ do
+ {
+	 hand_player[pos_card]=(rand() % 3)*10+rand()%8;
+	 if (pool[hand_player[pos_card]/10][hand_player[pos_card]%10]==1)
+	 {
+		 pool[hand_player[pos_card]/10][hand_player[pos_card]%10] = 0;
+		 table=true;
+	 }
+ }while (table==false);
+  table=false;
+
+  switch (pos_card)
+  {
+	  case 0:
+	  Form2->Image1->Picture->LoadFromFile("image\\"+ IntToStr(hand_player[pos_card]+11) +".bmp");
+	  break;
+	  case 1:
+	  Form2->Image2->Picture->LoadFromFile("image\\"+ IntToStr(hand_player[pos_card]+11) +".bmp");
+	  left_hand();
+	  break;
+	  case 2:
+	  Form2->Image3->Picture->LoadFromFile("image\\"+ IntToStr(hand_player[pos_card]+11) +".bmp");
+	  left_hand();
+	  break;
+	  case 3:
+	  Form2->Image4->Picture->LoadFromFile("image\\"+ IntToStr(hand_player[pos_card]+11) +".bmp");
+	  left_hand();
+	  break;
+	  case 4:
+	  Form2->Image5->Picture->LoadFromFile("image\\"+ IntToStr(hand_player[pos_card]+11) +".bmp");
+	  left_hand();
+	  break;
+	  case 5:
+	  Form2->Image6->Picture->LoadFromFile("image\\"+ IntToStr(hand_player[pos_card]+11) +".bmp");
+	  left_hand();
+	  break;
+	  default:
+	  break;
+  }
+   score_pl+=score_card(hand_player,pos_card);
+   Form2->Score_player->Caption=score_pl;
+   if (StrToInt(Form2->Score_player->Caption)>21)
+   {
+	 Form3->Show();
+     Form3->Result->Caption="Проигрыш";
+	 Form2->TakeCard->Enabled=false;
+	 Form2->NextTurn->Enabled=false;
+
+	 String file_space = ("profile\\" + IntToStr(number_acc));
+	 user_date = fopen(AnsiString(file_space).c_str(),"rt");
+	 fread(&check, sizeof(profile), 80, user_date);
+	 fclose(user_date);
+
+	 check.lose+=1;
+	 user_date = fopen(AnsiString(file_space).c_str(),"wt");
+	 fwrite(&check, sizeof(profile), 80, user_date);
+	 fclose(user_date);
+   }
+
+   pos_card+=1;
+
+}
+//---------------------------------------------------------------------------
+void __fastcall TForm2::NextTurnClick(TObject *Sender)
+{
+ int ai_comp;
+ srand(time(NULL));
+ while(score_comp * score_comp<(rand()%85)+200)
+ {
+  comp_card();
+ }
+
+ bool combo;
+ if (pos_card==5)
+ {
+   combo=true;
+   for (int i; i<pos_card; i+=1)
+   {
+   if (!(hand_player[i]%10>=0 && hand_player[i]%10<=2))
+   {
+	combo=false;
+   }
+  }
+  if (combo==true)
+  {
+   score_pl=21;
+  }
+ }
+ combo=false;
+ if(pos_card==2)
+ {
+  if (hand_player[0]%10==8 && hand_player[1]%10==8)
+  {
+   combo=true;
+   Form3->Show();
+   Form3->Result->Caption="Выйгрыш комбинация тузов";
+   Form2->TakeCard->Enabled=false;
+   Form2->NextTurn->Enabled=false;
+
+   String file_space = ("profile\\" + IntToStr(number_acc));
+   user_date = fopen(AnsiString(file_space).c_str(),"rt");
+   fread(&check,  sizeof(profile), 80, user_date);
+   fclose(user_date);
+
+   check.win+=1;
+   user_date = fopen(AnsiString(file_space).c_str(),"wt");
+   fwrite(&check, sizeof(profile), 80, user_date);
+   fclose(user_date);
+  }
+ }
+
+ int combo_comp(true);
+ if (pos_comp==5)
+ {
+  for (int i; i<pos_comp; i+=1)
+  {
+   if (!(hand_comp[i]%10>=0 && hand_comp[i]%10<=2))
+   {
+	combo_comp=false;
+   }
+  }
+  if (combo_comp==true)
+  {
+   score_comp=21;
+  }
+ }
+
+ if (combo==false)
+ {
+   if(score_pl>=22 && score_comp>=22)
+   {
+	Form3->Show();
+	Form3->Result->Caption="Ничья";
+	Form2->TakeCard->Enabled=false;
+	Form2->NextTurn->Enabled=false;
+
+	String file_space = ("profile\\" + IntToStr(number_acc));
+	user_date = fopen(AnsiString(file_space).c_str(),"rt");
+	fread(&check, sizeof(profile), 80, user_date);
+	fclose(user_date);
+
+	check.draw+=1;
+	user_date = fopen(AnsiString(file_space).c_str(),"wt");
+	fwrite(&check, sizeof(profile), 80, user_date);
+	fclose(user_date);
+   }
+   if(score_comp==score_pl)
+   {
+   	Form3->Show();
+	Form3->Result->Caption="Ничья";
+	Form2->TakeCard->Enabled=false;
+	Form2->NextTurn->Enabled=false;
+
+	String file_space = ("profile\\" + IntToStr(number_acc));
+	user_date = fopen(AnsiString(file_space).c_str(),"rt");
+	fread(&check, sizeof(profile), 80, user_date);
+	fclose(user_date);
+
+	check.draw+=1;
+	user_date = fopen(AnsiString(file_space).c_str(),"wt");
+	fwrite(&check, sizeof(profile), 80, user_date);
+	fclose(user_date);
+   }
+   if(score_comp>score_pl && score_comp<=21)
+   {
+	Form3->Show();
+	Form3->Result->Caption="Проигрыш";
+	Form2->TakeCard->Enabled=false;
+	Form2->NextTurn->Enabled=false;
+
+	String file_space = ("profile\\" + IntToStr(number_acc));
+	user_date = fopen(AnsiString(file_space).c_str(),"rt");
+	fread(&check, sizeof(profile), 80, user_date);
+	fclose(user_date);
+
+	check.lose+=1;
+	user_date = fopen(AnsiString(file_space).c_str(),"wt");
+	fwrite(&check, sizeof(profile), 80, user_date);
+	fclose(user_date);
+   }
+   if(score_comp>=22 && score_pl<=21)
+   {
+	Form3->Show();
+	Form3->Result->Caption="Выйгрыш";
+	Form2->TakeCard->Enabled=false;
+	Form2->NextTurn->Enabled=false;
+
+	String file_space = ("profile\\" + IntToStr(number_acc));
+	user_date = fopen(AnsiString(file_space).c_str(),"rt");
+	fread(&check, sizeof(profile), 80, user_date);
+	fclose(user_date);
+
+	check.win+=1;
+	user_date = fopen(AnsiString(file_space).c_str(),"wt");
+	fwrite(&check, sizeof(profile), 80, user_date);
+	fclose(user_date);
+   }
+   if(score_pl>score_comp && score_pl<=21)
+   {
+	Form3->Show();
+	Form3->Result->Caption="Выйгрыш";
+	Form2->TakeCard->Enabled=false;
+	Form2->NextTurn->Enabled=false;
+
+	String file_space = ("profile\\" + IntToStr(number_acc));
+	user_date = fopen(AnsiString(file_space).c_str(),"rt");
+	fread(&check, sizeof(profile), 80, user_date);
+	fclose(user_date);
+
+	check.win+=1;
+	user_date = fopen(AnsiString(file_space).c_str(),"wt");
+	fwrite(&check, sizeof(profile), 80, user_date);
+	fclose(user_date);
+   }
+
+ }
+}
+//---------------------------------------------------------------------------
+void comp_card()
+{
+ bool table(false);
+ do
+ {
+	 hand_comp[pos_comp]=(rand() % 3)*10+rand()%8;
+	 if (pool[hand_comp[pos_comp]/10][hand_comp[pos_comp]%10]==1)
+	 {
+		 pool[hand_comp[pos_comp]/10][hand_comp[pos_comp]%10] = 0;
+		 table=true;
+	 }
+
+ }while (table==false);
+ table=false;
+
+ switch (pos_comp)
+  {
+	  case 0:
+	  Form2->Image7->Picture->LoadFromFile("image\\"+ IntToStr(hand_comp[pos_comp]+11) +".bmp");
+	  break;
+	  case 1:
+	  Form2->Image8->Picture->LoadFromFile("image\\"+ IntToStr(hand_comp[pos_comp]+11) +".bmp");
+	  break;
+	  case 2:
+	  Form2->Image9->Picture->LoadFromFile("image\\"+ IntToStr(hand_comp[pos_comp]+11) +".bmp");
+      left_hand_comp();
+	  break;
+	  case 3:
+	  Form2->Image10->Picture->LoadFromFile("image\\"+ IntToStr(hand_comp[pos_comp]+11) +".bmp");
+	  left_hand_comp();
+	  break;
+	  case 4:
+	  Form2->Image11->Picture->LoadFromFile("image\\"+ IntToStr(hand_comp[pos_comp]+11) +".bmp");
+	  left_hand_comp();
+	  break;
+	  case 5:
+	  Form2->Image12->Picture->LoadFromFile("image\\"+ IntToStr(hand_comp[pos_comp]+11) +".bmp");
+	  left_hand_comp();
+	  break;
+	  default:
+	  break;
+  }
+  score_comp+=score_card(hand_comp,pos_comp);
+  Form2->Score_comp->Caption=score_comp;
+
+
+  pos_comp+=1;
+}
+//---------------------------------------------------------------------------

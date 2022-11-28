@@ -1,0 +1,342 @@
+//---------------------------------------------------------------------------
+
+#include <vcl.h>
+#include <string.h>
+#include <stdio.h>
+#pragma hdrstop
+
+#include "Unit1.h"
+#include "Unit2.h"
+#include "Unit4.h"
+#include "Unit2.cpp"
+//---------------------------------------------------------------------------
+#pragma package(smart_init)
+#pragma resource "*.dfm"
+TForm1 *Form1;
+void card2_comp();
+void card2_pl();
+
+//---------------------------------------------------------------------------
+__fastcall TForm1::TForm1(TComponent* Owner)
+	: TForm(Owner)
+{
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TForm1::StartGameClick(TObject *Sender)
+{
+ restart();
+ Form2->Show();
+ for (int i=0; i<4;i++)
+ {
+	for (int j=0; j<9; j++)
+	{
+	 pool[i][j]=1;
+	}
+ }
+
+
+ card2_comp();
+ card2_pl();
+ card2_pl();
+ Form1->Hide();
+}
+//---------------------------------------------------------------------------
+void card2_comp()
+{
+ bool table(false);
+ do
+ {
+	 hand_comp[pos_comp]=(rand() % 3)*10+rand()%8;
+	 if (pool[hand_comp[pos_comp]/10][hand_comp[pos_comp]%10]==1)
+	 {
+		 pool[hand_comp[pos_comp]/10][hand_comp[pos_comp]%10] = 0;
+		 table=true;
+	 }
+
+ }while (table==false);
+ table=false;
+
+ switch (pos_comp)
+  {
+	  case 0:
+	  Form2->Image7->Picture->LoadFromFile("image\\"+ IntToStr(hand_comp[pos_comp]+11) +".bmp");
+	  break;
+	  default:
+	  break;
+  }
+  score_comp+=score_card(hand_comp,pos_comp);
+  Form2->Score_comp->Caption=score_comp;
+  Form2->Image8->Picture->LoadFromFile("image\\100.bmp");
+  left_hand_comp();
+
+  pos_comp+=1;
+}
+//---------------------------------------------------------------------------
+void card2_pl()
+{
+bool table(false);
+ do
+ {
+  hand_player[pos_card]=(rand() % 3)*10+rand()%8;
+  if (pool[hand_player[pos_card]/10][hand_player[pos_card]%10]==1)
+  {
+   pool[hand_player[pos_card]/10][hand_player[pos_card]%10] = 0;
+   table=true;
+  }
+
+ }while (table==false);
+ table=false;
+
+ switch (pos_card)
+  {
+	  case 0:
+	  Form2->Image1->Picture->LoadFromFile("image\\"+ IntToStr(hand_player[pos_card]+11) +".bmp");
+	  break;
+	  case 1:
+	  Form2->Image2->Picture->LoadFromFile("image\\"+ IntToStr(hand_player[pos_card]+11) +".bmp");
+	  left_hand();
+	  break;
+	  default:
+	  break;
+  }
+  score_pl+=score_card(hand_player,pos_card);
+  Form2->Score_player->Caption=score_pl;
+  pos_card+=1;
+ }
+//---------------------------------------------------------------------------
+void __fastcall TForm1::ExitClick(TObject *Sender)
+{
+ Form1->Close();
+}
+//---------------------------------------------------------------------------
+
+
+
+void __fastcall TForm1::registrClick(TObject *Sender)
+{
+  if (Form1->login->Text != "" && Form1->password->Text != "")
+  {
+  int number(0);
+  bool dubl_user(false);
+  while(FileExists("profile\\" + IntToStr(number)) && dubl_user==false)
+  {
+   user_date = fopen(AnsiString("profile\\"+IntToStr(number)).c_str(),"rt");
+   fread(&check,sizeof(profile),1,user_date);
+   if (check.name == Form1->login->Text)
+   {
+	ShowMessage("Пользователь с таким логином уже существует");
+	dubl_user=true;
+   }
+   else
+   {
+    number++;
+   }
+   fclose(user_date);
+
+  }
+  String file_space = ("profile\\"+IntToStr(number));
+  if (dubl_user == false)
+  {
+   user_date = fopen(AnsiString(file_space).c_str(),"wt");
+
+   strcpy(check.name, AnsiString(Form1->login->Text).c_str());
+   strcpy(check.parol, AnsiString(Form1->password->Text).c_str());
+   check.win=0;
+   check.lose=0;
+   check.draw=0;
+   fwrite(&check, sizeof(profile), 1, user_date);
+
+   fclose(user_date);
+
+   Form1->login->Enabled=0;
+   Form1->password->Enabled=0;
+   Form1->login->Text="";
+   Form1->password->Text="";
+
+   Form1->StartGame->Enabled=1;
+   Form1->log->Enabled=0;
+   Form1->registr->Enabled=0;
+   Form1->logout->Enabled=1;
+   ShowMessage("Вы успешно зарегистрировались");
+   number_acc = number;
+   Timer1->Enabled = true;
+
+  }
+  number = 0;
+ }
+ else
+ {
+  ShowMessage("Введите все данные");
+ }
+
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TForm1::logClick(TObject *Sender)
+{
+ if (Form1->login->Text != "" && Form1->password->Text != "")
+ {
+  int number(0);
+  bool right_user(false), right_password(false);
+  String file_space("profile\\"+IntToStr(number));
+
+  while(FileExists(file_space) && right_user==false)
+  {
+   file_space=("profile\\"+IntToStr(number));
+   user_date = fopen(AnsiString(file_space).c_str(),"rt");
+   fread(&check, sizeof(profile), 1, user_date);
+
+   if (check.name==Form1->login->Text)
+   {
+	right_user=true;
+	if (check.parol==Form1->password->Text)
+	{
+	right_password=true;
+	}
+   }
+   else
+   {
+	number++;
+   }
+   fclose(user_date);
+  }
+
+  if (right_user==true && right_password==true) 
+  {
+   Form1->login->Enabled=0;
+   Form1->password->Enabled=0;
+   Form1->login->Text="";
+   Form1->password->Text="";
+
+   Form1->StartGame->Enabled=1;
+   Form1->log->Enabled=0;
+   Form1->registr->Enabled=0;
+   Form1->logout->Enabled=1;
+   ShowMessage("Вы успешно авторизировались");
+   number_acc = number;
+   Timer1->Enabled = true;
+
+   user_date = fopen(AnsiString(file_space).c_str(),"rt");
+   fread(&check, sizeof(profile), 1, user_date);
+   Form1->Label10->Caption = check.name;
+   fclose(user_date);
+  }
+  else
+  {
+   if (right_user==true) 
+   {
+	ShowMessage("Неправильный пароль");
+   }
+   else
+   {
+	ShowMessage("Такого пользователя не существует");
+   }
+  }
+  number = 0;
+ }
+ else
+ { 
+  ShowMessage("Введите все данные");
+ }
+} 
+//---------------------------------------------------------------------------
+
+
+
+void __fastcall TForm1::logoutClick(TObject *Sender)
+{
+ Form1->login->Enabled=1;
+ Form1->password->Enabled=1;
+
+ Form1->StartGame->Enabled=0;
+ Form1->log->Enabled=1;
+ Form1->registr->Enabled=1;
+ Form1->logout->Enabled=0;
+ Form1->Label10->Caption="";
+ Form1->Label4->Caption = "";
+ Form1->Label5->Caption = "";
+ Form1->Label8->Caption = "";
+ ShowMessage("Вы вышли из учётной записи");
+ number_acc = -1;
+ Timer1->Enabled = false;
+
+
+}
+//---------------------------------------------------------------------------
+
+
+void __fastcall TForm1::Timer1Timer(TObject *Sender)
+{
+ String file_space = ("profile\\" + IntToStr(number_acc));
+ user_date = fopen(AnsiString(file_space).c_str(),"rt");
+ fread(&check, sizeof(profile), 1, user_date);
+
+ Form1->Label4->Caption=IntToStr(check.win);
+ Form1->Label5->Caption=IntToStr(check.lose);
+ Form1->Label8->Caption=IntToStr(check.draw);
+ fclose(user_date);
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TForm1::N2Click(TObject *Sender)
+{
+	Form4->Show();
+    Form1->Hide();
+
+	Form4->StringGrid1->Cells[0][0] = "Имя";
+	Form4->StringGrid1->Cells[1][0] = "Побед";
+	Form4->StringGrid1->Cells[2][0] = "Поражений";
+	Form4->StringGrid1->Cells[3][0] = "Ничьих";
+
+	int count_user(0);
+	String put_to_score("profile\\"+IntToStr(count_user));
+	Form4->StringGrid1->RowCount = 1;
+	Form4->StringGrid1->Height = 25;
+
+	while(FileExists(put_to_score))
+	{
+		put_to_score = "profile\\"+IntToStr(count_user);
+		if(FileExists(put_to_score))
+		{
+			//ShowMessage(put_to_score);
+			Form4->StringGrid1->RowCount += 1;
+			if (Form4->StringGrid1->Height != 550)
+			{
+				Form4->StringGrid1->Height +=25;
+			}
+
+			user_date = fopen(AnsiString(put_to_score).c_str(),"rt");
+			fread(&check, sizeof(profile), 1, user_date);
+
+			Form4->StringGrid1->Cells[0][count_user+1] = check.name;
+			Form4->StringGrid1->Cells[1][count_user+1] = check.win;
+			Form4->StringGrid1->Cells[2][count_user+1] = check.lose;
+			Form4->StringGrid1->Cells[3][count_user+1] = check.draw;
+
+			fclose(user_date);
+		}
+        count_user +=1;
+	}
+
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TForm1::N3Click(TObject *Sender)
+{
+	ShowMessage("Написать программу, рассчитанную на активное взаимодействие с пользователем посредством графического интерфейса. За основу берётся правила игры в 21 очко. Создание и сохранение результатов в аккаунты пользователей которые записываются в файлы. Показывать визуально ход и результат игры.");
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TForm1::N4Click(TObject *Sender)
+{
+	ShowMessage("");
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TForm1::N5Click(TObject *Sender)
+{
+	ShowMessage("Beta 1.1 \n Дата изменения: 28.05.2022");
+}
+//---------------------------------------------------------------------------
+

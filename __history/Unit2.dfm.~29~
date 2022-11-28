@@ -1,0 +1,224 @@
+object Form2: TForm2
+  Left = 343
+  Top = 77
+  Caption = '21 '#1086#1095#1082#1086
+  ClientHeight = 761
+  ClientWidth = 1184
+  Color = clBtnFace
+  Font.Charset = DEFAULT_CHARSET
+  Font.Color = clWindowText
+  Font.Height = -11
+  Font.Name = 'Tahoma'
+  Font.Style = []
+  Menu = MainMenu1
+  OldCreateOrder = False
+  Position = poDesigned
+  DesignSize = (
+    1184
+    761)
+  PixelsPerInch = 96
+  TextHeight = 13
+  object Image1: TImage
+    Left = 520
+    Top = 603
+    Width = 105
+    Height = 150
+    Anchors = []
+    Center = True
+    Transparent = True
+  end
+  object Image2: TImage
+    Left = 624
+    Top = 603
+    Width = 105
+    Height = 150
+    Anchors = []
+    Center = True
+    Transparent = True
+  end
+  object Image3: TImage
+    Left = 727
+    Top = 603
+    Width = 105
+    Height = 150
+    Anchors = []
+    Center = True
+    Transparent = True
+  end
+  object Image4: TImage
+    Left = 830
+    Top = 603
+    Width = 105
+    Height = 150
+    Anchors = []
+    Center = True
+    Transparent = True
+  end
+  object Image5: TImage
+    Left = 936
+    Top = 603
+    Width = 105
+    Height = 150
+    Anchors = []
+    Center = True
+    Transparent = True
+  end
+  object Image6: TImage
+    Left = 1040
+    Top = 603
+    Width = 105
+    Height = 150
+    Anchors = []
+    Center = True
+    Transparent = True
+  end
+  object Score_player: TLabel
+    Left = 1124
+    Top = 498
+    Width = 40
+    Height = 40
+    Alignment = taCenter
+    AutoSize = False
+    BiDiMode = bdLeftToRight
+    Font.Charset = RUSSIAN_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -32
+    Font.Name = 'Times New Roman'
+    Font.Style = []
+    ParentBiDiMode = False
+    ParentFont = False
+  end
+  object Label1: TLabel
+    Left = 960
+    Top = 502
+    Width = 158
+    Height = 36
+    Caption = #1042#1072#1096#1080' '#1086#1095#1082#1080':'
+    Font.Charset = RUSSIAN_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -32
+    Font.Name = 'Times New Roman'
+    Font.Style = []
+    ParentFont = False
+  end
+  object Image7: TImage
+    Left = 520
+    Top = 8
+    Width = 105
+    Height = 150
+    Anchors = []
+    Center = True
+    Transparent = True
+  end
+  object Image8: TImage
+    Left = 624
+    Top = 8
+    Width = 105
+    Height = 150
+    Anchors = []
+    Center = True
+    Transparent = True
+  end
+  object Image9: TImage
+    Left = 728
+    Top = 8
+    Width = 105
+    Height = 150
+    Anchors = []
+    Center = True
+    Transparent = True
+  end
+  object Image10: TImage
+    Left = 832
+    Top = 8
+    Width = 105
+    Height = 150
+    Anchors = []
+    Center = True
+    Transparent = True
+  end
+  object Image11: TImage
+    Left = 936
+    Top = 8
+    Width = 105
+    Height = 150
+    Anchors = []
+    Center = True
+    Transparent = True
+  end
+  object Image12: TImage
+    Left = 1040
+    Top = 8
+    Width = 105
+    Height = 150
+    Anchors = []
+    Center = True
+    Transparent = True
+  end
+  object Label2: TLabel
+    Left = 866
+    Top = 182
+    Width = 252
+    Height = 36
+    Caption = #1054#1095#1082#1080' '#1082#1086#1084#1087#1100#1102#1090#1077#1088#1072':'
+    Font.Charset = RUSSIAN_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -32
+    Font.Name = 'Times New Roman'
+    Font.Style = []
+    ParentFont = False
+  end
+  object Score_comp: TLabel
+    Left = 1124
+    Top = 182
+    Width = 40
+    Height = 40
+    Alignment = taCenter
+    AutoSize = False
+    BiDiMode = bdLeftToRight
+    Font.Charset = RUSSIAN_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -32
+    Font.Name = 'Times New Roman'
+    Font.Style = []
+    ParentBiDiMode = False
+    ParentFont = False
+  end
+  object TakeCard: TButton
+    Left = 960
+    Top = 544
+    Width = 200
+    Height = 50
+    Caption = #1042#1079#1103#1090#1100' '#1082#1072#1088#1090#1091
+    Font.Charset = RUSSIAN_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -21
+    Font.Name = 'Times New Roman'
+    Font.Style = []
+    ParentFont = False
+    TabOrder = 0
+    OnClick = TakeCardClick
+  end
+  object NextTurn: TButton
+    Left = 960
+    Top = 376
+    Width = 200
+    Height = 50
+    Caption = #1056#1072#1089#1082#1088#1099#1090#1100' '#1082#1072#1088#1090#1099
+    Font.Charset = RUSSIAN_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -21
+    Font.Name = 'Times New Roman'
+    Font.Style = []
+    ParentFont = False
+    TabOrder = 1
+  end
+  object MainMenu1: TMainMenu
+    Left = 104
+    Top = 16
+    object MainMenu: TMenuItem
+      Caption = #1043#1083#1072#1074#1085#1086#1077' '#1084#1077#1085#1102
+      OnClick = MainMenuClick
+    end
+  end
+end
